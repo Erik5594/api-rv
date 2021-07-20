@@ -1,12 +1,14 @@
 package com.erik5594.apivr.service.impl;
 
-import com.erik5594.apivr.domain.DetalheErro;
+import com.erik5594.apivr.domain.ResultadoVotacao;
 import com.erik5594.apivr.domain.Voto;
+import com.erik5594.apivr.domain.VotoEnum;
 import com.erik5594.apivr.exceptions.ValidacaoException;
 import com.erik5594.apivr.repository.VotoRepository;
 import com.erik5594.apivr.service.AssociadoService;
 import com.erik5594.apivr.service.PautaService;
 import com.erik5594.apivr.service.VotoService;
+import com.erik5594.apivr.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +36,9 @@ public class VotoServiceImpl implements VotoService {
     @Override
     public void salvar(Voto voto) {
         validar(voto);
-        voto.setId(gerarId());
+        voto.setId(Util.gerarId());
         voto.setPauta(pautaService.buscar(voto.getPauta().getId()));
         repository.save(voto);
-    }
-
-    private String gerarId(){
-        return UUID.randomUUID().toString();
     }
 
     private void validar(Voto voto){
@@ -49,10 +47,19 @@ public class VotoServiceImpl implements VotoService {
         }
         associadoService.validar(voto.getAssociado());
         pautaService.validar(voto.getPauta());
-        Voto votoR= repository.findVotoByAssociado_CpfAndPauta_Id(voto.getAssociado().getCpf(), voto.getPauta().getId())
+        Voto votoR = repository.findVotoByAssociado_CpfAndPauta_Id(voto.getAssociado().getCpf(), voto.getPauta().getId())
                 .orElse(null);
         if(votoR != null){
             throw new ValidacaoException("Associado já registrou um voto anteriormente para essa pauta.", 400);
         }
+    }
+
+    @Override
+    public ResultadoVotacao resultado(String idPauta) {
+        boolean votacaoAberta = pautaService.votacaoAberta(idPauta);
+        List<Voto> votos = repository.findAllByPauta_Id(idPauta).orElse(new ArrayList<>());
+        long qtdeVotosSim = votos.stream().filter(voto -> voto.getVoto() == VotoEnum.SIM).count();
+        long qtdeVotosNao = votos.stream().filter(voto -> voto.getVoto() == VotoEnum.NAO).count();
+        return new ResultadoVotacao(qtdeVotosSim, qtdeVotosNao, votacaoAberta);
     }
 }

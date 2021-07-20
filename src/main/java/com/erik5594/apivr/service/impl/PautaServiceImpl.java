@@ -1,15 +1,17 @@
 package com.erik5594.apivr.service.impl;
 
-import com.erik5594.apivr.domain.DetalheErro;
 import com.erik5594.apivr.domain.Pauta;
 import com.erik5594.apivr.exceptions.ValidacaoException;
 import com.erik5594.apivr.repository.PautaRepository;
 import com.erik5594.apivr.service.PautaService;
 import com.erik5594.apivr.util.DataUtils;
+import com.erik5594.apivr.util.Util;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,17 +29,25 @@ public class PautaServiceImpl implements PautaService {
 
     @Override
     public Pauta salvar(Pauta pauta) {
-        pauta.setId(gerarId());
+        pauta.setId(Util.gerarId());
         return repository.save(pauta);
     }
 
     @Override
     public Pauta buscar(String id) {
-        return repository.findById(id).orElse(null);
+        Pauta pauta = repository.findById(id).orElse(null);
+        if(pauta == null)
+            throw new ValidacaoException("Pauta não encontrada.",404);
+        return pauta;
     }
 
-    private String gerarId() {
-        return UUID.randomUUID().toString();
+    public boolean votacaoAberta(String idPauta){
+        return buscar(idPauta).isVotacaoAberta();
+    }
+
+    @Override
+    public List<Pauta> buscarTodas() {
+        return repository.findAll();
     }
 
     private Pauta buscarPautaValidaAbrirSessao(String id){
@@ -65,20 +75,12 @@ public class PautaServiceImpl implements PautaService {
 
     @Override
     public void validar(Pauta pauta) {
-        if(pauta == null || pauta.getId() == null){
+        if(pauta == null || StringUtils.isBlank(pauta.getId()))
             throw new ValidacaoException("Pauta deve ser informada.", 400);
-        }
-        Pauta pautaR = repository.findById(pauta.getId()).orElse(null);
-        if(pautaR == null){
-            throw new ValidacaoException("Pauta não foi encontrada.", 404);
-        }
-        if(pautaR.getInicioSessao() == null){
-            throw new ValidacaoException("Sessão para votação ainda não foi aberta.", 400);
-        }
-        if(pautaR.getFimSessao().before(new Date())){
-            throw new ValidacaoException("Sessão já foi encerrada.", 400);
-        }
-        if(pautaR.getInicioSessao().after(new Date()))
-            throw new ValidacaoException("A sessão ainda não foi aberta.", 400);
+
+        Pauta pautaR = buscar(pauta.getId());
+
+        if(!pautaR.isVotacaoAberta())
+            throw new ValidacaoException("Sessão para votação não está aberta.", 400);
     }
 }

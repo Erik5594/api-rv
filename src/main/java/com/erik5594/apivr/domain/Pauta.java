@@ -3,7 +3,6 @@ package com.erik5594.apivr.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author erik_
@@ -21,8 +20,8 @@ public class Pauta {
     private Date dataCadastro;
     private Date inicioSessao;
     private Date fimSessao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pauta", fetch = FetchType.EAGER)
-    private List<Voto> votos;
+    @Transient
+    private boolean votacaoAberta;
 
     public Pauta() {
         this.dataCadastro = new Date();
@@ -64,11 +63,11 @@ public class Pauta {
         this.fimSessao = fimSessao;
     }
 
-    public List<Voto> getVotos() {
-        return votos;
+    public boolean isVotacaoAberta(){
+        return getInicioSessao() != null
+                && getFimSessao() != null
+                && getFimSessao().compareTo(new Date()) > 0
+                && getInicioSessao().compareTo(new Date()) < 1;
     }
 
-    public void setVotos(List<Voto> votos) {
-        this.votos = votos;
-    }
 }

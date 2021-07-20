@@ -1,5 +1,6 @@
 package com.erik5594.apivr.service;
 
+import com.erik5594.apivr.domain.ResultadoVotacao;
 import com.erik5594.apivr.domain.Voto;
 
 /**
@@ -8,4 +9,5 @@ import com.erik5594.apivr.domain.Voto;
  */
 public interface VotoService {
     void salvar(Voto voto);
+    ResultadoVotacao resultado(String idPauta);
 }
