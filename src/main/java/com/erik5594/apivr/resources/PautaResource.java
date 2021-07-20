@@ -4,10 +4,7 @@ import com.erik5594.apivr.domain.Pauta;
 import com.erik5594.apivr.service.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -34,4 +31,11 @@ public class PautaResource {
         return ResponseEntity.created(uri).build();
     }
 
+
+    @RequestMapping(value = "/{id}/abrir-votacao", method = RequestMethod.PUT)
+    public ResponseEntity<Void> abrirSessao(@PathVariable("id") String idPauta,
+                                            @RequestParam(value = "segundos-aberta", required = false) Integer segundosAberta){
+        pautaService.abrirSessao(idPauta, segundosAberta == null ? 0:segundosAberta);
+        return ResponseEntity.accepted().build();
+    }
 }

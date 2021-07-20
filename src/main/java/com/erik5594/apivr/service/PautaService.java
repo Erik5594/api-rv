@@ -9,5 +9,6 @@ import com.erik5594.apivr.domain.Pauta;
 public interface PautaService {
 
     Pauta salvar(Pauta pauta);
+    void abrirSessao(String idPauta, int segundos);
 
 }
