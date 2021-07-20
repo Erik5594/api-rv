@@ -23,12 +23,8 @@ public class PautaResource {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> criar(@Valid @RequestBody Pauta pauta){
-        pauta = pautaService.salvar(pauta);
-
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(pauta.getId()).toUri();
-
-        return ResponseEntity.created(uri).build();
+        pautaService.salvar(pauta);
+        return ResponseEntity.accepted().build();
     }
 
 

@@ -1,9 +1,9 @@
 package com.erik5594.apivr.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author erik_
@@ -21,6 +21,8 @@ public class Pauta {
     private Date dataCadastro;
     private Date inicioSessao;
     private Date fimSessao;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pauta", fetch = FetchType.EAGER)
+    private List<Voto> votos;
 
     public Pauta() {
         this.dataCadastro = new Date();
@@ -60,5 +62,13 @@ public class Pauta {
 
     public void setFimSessao(Date fimSessao) {
         this.fimSessao = fimSessao;
+    }
+
+    public List<Voto> getVotos() {
+        return votos;
+    }
+
+    public void setVotos(List<Voto> votos) {
+        this.votos = votos;
     }
 }

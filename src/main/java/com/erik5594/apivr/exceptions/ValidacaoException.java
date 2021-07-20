@@ -10,9 +10,9 @@ public class ValidacaoException extends RuntimeException {
 
     private int status;
 
-    public ValidacaoException(DetalheErro detalheErro) {
-        super(detalheErro.getMensagem());
-        this.status = detalheErro.getStatus();
+    public ValidacaoException(String mensagem, int status) {
+        super(mensagem);
+        this.status = status;
     }
 
     public int getStatus() {

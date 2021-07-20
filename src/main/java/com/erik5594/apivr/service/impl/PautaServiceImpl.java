@@ -1,15 +1,14 @@
-package com.erik5594.apivr.service;
+package com.erik5594.apivr.service.impl;
 
 import com.erik5594.apivr.domain.DetalheErro;
 import com.erik5594.apivr.domain.Pauta;
 import com.erik5594.apivr.exceptions.ValidacaoException;
 import com.erik5594.apivr.repository.PautaRepository;
+import com.erik5594.apivr.service.PautaService;
 import com.erik5594.apivr.util.DataUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -32,6 +31,11 @@ public class PautaServiceImpl implements PautaService {
         return repository.save(pauta);
     }
 
+    @Override
+    public Pauta buscar(String id) {
+        return repository.findById(id).orElse(null);
+    }
+
     private String gerarId() {
         return UUID.randomUUID().toString();
     }
@@ -39,10 +43,10 @@ public class PautaServiceImpl implements PautaService {
     private Pauta buscarPautaValidaAbrirSessao(String id){
         Pauta pauta = repository.findById(id).orElse(null);
         if(pauta == null){
-            throw new ValidacaoException(new DetalheErro("Pauta não encontrada", 404));
+            throw new ValidacaoException("Pauta não encontrada", 404);
         }
         if(pauta.getInicioSessao() != null || pauta.getFimSessao() != null){
-            throw new ValidacaoException(new DetalheErro("Não é possível abrir sessão para a pauta, pois a mesma já foi aberta uma vez", 400));
+            throw new ValidacaoException("Não é possível abrir sessão para a pauta, pois a mesma já foi aberta uma vez", 400);
         }
         return pauta;
     }
@@ -59,4 +63,22 @@ public class PautaServiceImpl implements PautaService {
         return segundos <= 0 ? TEMPO_DEFAULT : segundos;
     }
 
+    @Override
+    public void validar(Pauta pauta) {
+        if(pauta == null || pauta.getId() == null){
+            throw new ValidacaoException("Pauta deve ser informada.", 400);
+        }
+        Pauta pautaR = repository.findById(pauta.getId()).orElse(null);
+        if(pautaR == null){
+            throw new ValidacaoException("Pauta não foi encontrada.", 404);
+        }
+        if(pautaR.getInicioSessao() == null){
+            throw new ValidacaoException("Sessão para votação ainda não foi aberta.", 400);
+        }
+        if(pautaR.getFimSessao().before(new Date())){
+            throw new ValidacaoException("Sessão já foi encerrada.", 400);
+        }
+        if(pautaR.getInicioSessao().after(new Date()))
+            throw new ValidacaoException("A sessão ainda não foi aberta.", 400);
+    }
 }
