@@ -1,7 +1,6 @@
 package com.erik5594.apivr.domain;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 /**
@@ -14,8 +13,6 @@ public class Pauta {
 
     @Id
     private String id;
-
-    @NotEmpty(message = "O campo assunto não pode vazio.")
     private String assunto;
     private Date dataCadastro;
     private Date inicioSessao;
@@ -25,6 +22,11 @@ public class Pauta {
 
     public Pauta() {
         this.dataCadastro = new Date();
+    }
+
+    public Pauta(String assunto) {
+        this();
+        this.assunto = assunto;
     }
 
     public String getId() {

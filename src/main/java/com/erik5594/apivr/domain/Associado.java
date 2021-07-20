@@ -1,13 +1,11 @@
 package com.erik5594.apivr.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
 /**
  * @author erik_
@@ -18,13 +16,12 @@ public class Associado {
 
     @Id
     @NotEmpty(message = "CPF do associado deve ser informado.")
+    @ApiModelProperty(required = true)
     private String cpf;
 
     @NotEmpty(message = "O nome do associado deve ser informado.")
+    @ApiModelProperty(required = true)
     private String nome;
-
-    @OneToMany(mappedBy = "associado", fetch = FetchType.LAZY)
-    private List<Voto> votos;
 
     public String getCpf() {
         if(StringUtils.isNotBlank(this.cpf)){
@@ -43,13 +40,5 @@ public class Associado {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public List<Voto> getVotos() {
-        return votos;
-    }
-
-    public void setVotos(List<Voto> votos) {
-        this.votos = votos;
     }
 }

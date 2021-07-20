@@ -1,7 +1,8 @@
 package com.erik5594.apivr.domain;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -14,6 +15,7 @@ public class Voto {
     @Id
     private String id;
 
+    @ApiModelProperty(value = "Deve ser informado SIM ou NAO", example = "SIM")
     @Enumerated(EnumType.STRING)
     private VotoEnum voto;
 
@@ -26,6 +28,17 @@ public class Voto {
     @JoinColumn(name = "cpf_associado")
     @NotNull(message = "Associado deve ser iformado")
     private Associado associado;
+
+    public Voto() {
+    }
+
+    public Voto(VotoEnum voto, String idPauta, Associado associado) {
+        this.voto = voto;
+        Pauta pauta = new Pauta();
+        pauta.setId(idPauta);
+        this.pauta = pauta;
+        this.associado = associado;
+    }
 
     public String getId() {
         return id;
