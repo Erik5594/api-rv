@@ -24,7 +24,6 @@ public class VotoResource {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> criar(@Valid @RequestBody Voto voto){
-        System.out.println(voto);
         service.salvar(voto);
         return ResponseEntity.ok().build();
     }

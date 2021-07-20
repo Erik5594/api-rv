@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author erik_
@@ -45,10 +44,10 @@ public class VotoServiceImpl implements VotoService {
         if(voto.getVoto() == null){
             throw new ValidacaoException("O voto deve ser SIM ou NAO.", 400);
         }
-        associadoService.validar(voto.getAssociado());
-        pautaService.validar(voto.getPauta());
         Voto votoR = repository.findVotoByAssociado_CpfAndPauta_Id(voto.getAssociado().getCpf(), voto.getPauta().getId())
                 .orElse(null);
+        associadoService.validar(voto.getAssociado());
+        pautaService.validar(voto.getPauta());
         if(votoR != null){
             throw new ValidacaoException("Associado já registrou um voto anteriormente para essa pauta.", 400);
         }
