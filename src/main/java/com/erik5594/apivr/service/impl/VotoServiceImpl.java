@@ -61,4 +61,16 @@ public class VotoServiceImpl implements VotoService {
         long qtdeVotosNao = votos.stream().filter(voto -> voto.getVoto() == VotoEnum.NAO).count();
         return new ResultadoVotacao(qtdeVotosSim, qtdeVotosNao, votacaoAberta);
     }
+
+    public void setRepository(VotoRepository repository) {
+        this.repository = repository;
+    }
+
+    public void setAssociadoService(AssociadoService associadoService) {
+        this.associadoService = associadoService;
+    }
+
+    public void setPautaService(PautaService pautaService) {
+        this.pautaService = pautaService;
+    }
 }
