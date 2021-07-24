@@ -1,7 +1,5 @@
 package com.erik5594.apivr.exceptions;
 
-import com.erik5594.apivr.domain.DetalheErro;
-
 /**
  * @author erik_
  * Data Criacao: 19/07/2021 - 21:41
