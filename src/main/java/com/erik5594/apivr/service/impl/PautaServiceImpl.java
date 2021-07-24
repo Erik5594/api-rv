@@ -82,4 +82,8 @@ public class PautaServiceImpl implements PautaService {
         if(!pautaR.isVotacaoAberta())
             throw new ValidacaoException("Sessão para votação não está aberta.", 400);
     }
+
+    public void setRepository(PautaRepository repository) {
+        this.repository = repository;
+    }
 }
