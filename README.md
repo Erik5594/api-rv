@@ -19,6 +19,8 @@ Para executar o projeto, será necessário instalar os seguintes programas:
 - [Spring Data JPA v2.5.3](https://spring.io/projects/spring-data-jpa)
 - [Spring Boot MVC](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html)
 - [Java 8](https://www.java.com/pt-BR/download/help/java8_pt-br.html)
+- [JUnit 4](https://junit.org/junit4/)
+- [Mockito 1.10.19](https://site.mockito.org/)
 
 ## Features
 
